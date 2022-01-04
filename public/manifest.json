@@ -1,0 +1,12 @@
+{
+    "name": "Beta Show Tracker",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "Beta Show Tracker"
+    },
+    "permissions": ["storage"],
+    "description": "Cette extension vous permet de suivre vos séries TV en provenance de la plateforme Betaseries.",
+    "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" }
+}
