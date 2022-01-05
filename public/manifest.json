@@ -1,5 +1,6 @@
 {
     "name": "Beta Show Tracker",
+    "author": "Alexis Anzieu",
     "version": "1.0",
     "manifest_version": 3,
     "action": {

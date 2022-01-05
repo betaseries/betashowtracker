@@ -1,6 +1,7 @@
 {
     "name": "betashowtracker",
     "version": "0.0.1",
+    "author": "Alexis Anzieu",
     "type": "module",
     "scripts": {
         "dev": "vite",
