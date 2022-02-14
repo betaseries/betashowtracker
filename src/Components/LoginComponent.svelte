@@ -1,15 +1,16 @@
 <script lang="ts">
-    import { Button, FormField, TextField } from "attractions";
+    import { Button,FormField,TextField } from "attractions";
     import md5 from "md5";
     import { tokenStore } from "../stores";
 
     let login = "";
     let password = "";
     let errors: { code: number; text: string };
+    const apiKey = import.meta.env.VITE_API_KEY as string;
     const sendLogin = async () => {
         const hashedPassword = md5(password);
         const res = await fetch(
-            `https://api.betaseries.com/members/auth?login=${login}&client_id=7ecf3f5a33dd&password=${hashedPassword}`,
+            `https://api.betaseries.com/members/auth?login=${login}&client_id=${apiKey}&password=${hashedPassword}`,
             { method: "POST" }
         );
 
@@ -25,7 +26,7 @@
 
 <form on:submit|preventDefault={sendLogin}>
     <FormField
-        name="Peudo"
+        name="Pseudo"
         required
         errors={[errors?.code === 4002 && errors.text]}
     >
