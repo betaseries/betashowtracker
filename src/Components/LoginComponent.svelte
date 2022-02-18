@@ -1,6 +1,8 @@
 <script lang="ts">
-    import { Button,FormField,TextField } from "attractions";
+    import { Button, FormField, TextField } from "attractions";
     import md5 from "md5";
+    import { storageChrome } from "../../full_page";
+    import { t } from "../i18n";
     import { tokenStore } from "../stores";
 
     let login = "";
@@ -20,36 +22,38 @@
         } else {
             tokenStore.set(json.token);
             localStorage.setItem("tokenStore", json.token);
+            storageChrome("set", "tokenUser", json.token);
         }
     };
 </script>
 
 <form on:submit|preventDefault={sendLogin}>
     <FormField
-        name="Pseudo"
+        name={$t("login.pseudo")}
         required
         errors={[errors?.code === 4002 && errors.text]}
     >
         <TextField bind:value={login} />
     </FormField>
     <FormField
-        name="Mot de passe"
+        name={$t("login.password")}
         required
         errors={[errors?.code === 4003 && errors.text]}
     >
         <TextField type="password" bind:value={password} />
     </FormField>
     <div style="margin-left: 250px;">
-        <Button style="display:inline" type="submit" filled>Se connecter</Button
-        >
+        <Button style="display:inline" type="submit" filled>
+            {$t("login.button.login")}
+        </Button>
         <a
             target="_blank"
             style="text-decoration: none"
             href="https://www.betaseries.com/inscription/"
-            ><Button style="display:inline" outline>S'enregistrer</Button></a
         >
+            <Button style="display:inline" outline>
+                {$t("login.button.signup")}
+            </Button>
+        </a>
     </div>
 </form>
-
-<style>
-</style>

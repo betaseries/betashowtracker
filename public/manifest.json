@@ -1,13 +1,28 @@
 {
-    "name": "Beta Show Tracker",
-    "author": "Alexis Anzieu",
-    "version": "1.0",
+    "name": "BetaSeries",
+    "version": "2.0",
     "manifest_version": 3,
     "action": {
         "default_popup": "index.html",
-        "default_title": "Beta Show Tracker"
+        "default_title": "Extension BetaSeries"
     },
-    "permissions": ["storage"],
-    "description": "Cette extension vous permet de suivre vos séries TV en provenance de la plateforme Betaseries.",
-    "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" }
+    "permissions": [
+        "cookies",
+        "storage",
+        "alarms",
+        "tabs"
+    ],
+    "host_permissions": [
+        "*://*.netflix.com/",
+        "*://*.arte.tv/"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "description": "Cette extension vous permet de suivre vos séries TV en provenance de la plateforme Betaseries, ainsi que de syncroniser vos épisodes depuis vos plateformes SVOD.",
+    "icons": { 
+        "16": "images/16.png",
+        "32": "images/32.png",
+        "48": "images/48.png",
+        "128": "images/128.png" }
 }

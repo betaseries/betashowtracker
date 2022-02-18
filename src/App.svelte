@@ -1,8 +1,7 @@
 <script lang="ts">
-    import AutocompleteComponent from "./Components/AutocompleteComponent.svelte";
-    import LoginComponent from "./Components/LoginComponent.svelte";
-    import ShowsComponent from "./Components/ShowsComponent.svelte";
     import { SvelteToast } from "@zerodevx/svelte-toast";
+    import LogedComponent from "./Components/LogedComponent.svelte";
+    import LoginComponent from "./Components/LoginComponent.svelte";
     import { tokenStore } from "./stores";
     let token = localStorage.getItem("tokenStore");
     tokenStore.subscribe((value) => {
@@ -12,12 +11,11 @@
 
 <main>
     <SvelteToast />
-    <h2>Beta Show Tracker</h2>
+    <p class="logo"><img src="/images/logo.png" alt="BetaSeries" /></p>
     {#if !token}
         <LoginComponent />
     {:else}
-        <AutocompleteComponent />
-        <ShowsComponent />
+        <LogedComponent />
     {/if}
 </main>
 
@@ -29,6 +27,16 @@
 
     main {
         padding: 1em;
-        margin: 0 auto;
+        margin: 1em;
+        background-color: white;
+    }
+
+    .logo {
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+    .logo img {
+        width: 400px;
     }
 </style>

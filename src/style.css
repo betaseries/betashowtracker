@@ -1,0 +1,55 @@
+body {
+    background: url("/images/background_grey.jpg") #ededed;
+    background-size: 508px 576px;
+    font-size: 16px;
+    line-height: 150%;
+    margin: 50px auto;
+}
+#app {
+    padding-bottom: 1em;
+}
+.container-list-platforms {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.item-list-platforms {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.item-list-platforms div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+}
+.item-list-platforms img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    margin-right: 10px;
+    box-shadow: 0 0 3px grey;
+}
+.action-profile:hover {
+    cursor: pointer;
+}
+.green {
+    color: green;
+}
+.action-force-reload {
+    color: orange;
+    cursor: pointer;
+}
+.item-select-profile,
+.link_sync {
+    cursor: pointer;
+    color: #007bff;
+}
+.container-svg-action {
+    cursor: pointer;
+}
+.container-main {
+    margin-top: 1em;
+}

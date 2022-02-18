@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { Button, Loading, Divider } from "attractions";
-    import { CheckIcon } from "svelte-feather-icons";
     import ProgressBar from "@okrad/svelte-progressbar";
     import { toast } from "@zerodevx/svelte-toast";
-    import { tokenStore, showsStore } from "../stores";
-    import("dayjs/locale/fr");
+    import { Button, Divider, Loading } from "attractions";
     import dayjs from "dayjs";
     import relativeTime from "dayjs/plugin/relativeTime";
+    import { CheckIcon } from "svelte-feather-icons";
+    import { t } from "../i18n";
+    import { showsStore, tokenStore } from "../stores";
 
     dayjs.extend(relativeTime);
     const apiKey = import.meta.env.VITE_API_KEY;
@@ -31,7 +31,7 @@
         );
         await res.json();
         getShows();
-        toast.push("Épisode visionné", {
+        toast.push($t("manage-show.episode-viewed"), {
             duration: 3000,
             theme: {
                 "--toastBackground": "#3B8DD0",
@@ -79,9 +79,8 @@
                         <h3 style="margin: 3px;">{show.user.next.code}</h3>
                         <h4 style="margin: 3px;">{show.user.next.title}</h4>
                         <p style="margin: 10px 0px 0px 3px;">
-                            Sortie {dayjs(show.user.next.date)
-                                .locale("fr")
-                                .fromNow()}
+                            {$t("manage-show.release")}
+                            {dayjs(show.user.next.date).locale("fr").fromNow()}
                         </p>
                     </div>
                 </div>
@@ -103,6 +102,3 @@
         <Divider />
     {/each}
 {/if}
-
-<style>
-</style>
