@@ -21,6 +21,7 @@
   <a href="#features">Features</a> •
   <a href="#development">Development</a> •
   <a href="#tiers">Tiers</a> •
+  <a href="#contributors">Contributors</a>
 </p>
 
 ---
@@ -54,7 +55,7 @@ yarn dev
 Then fo to [localhost:3000](http://localhost:3000). to see the extension in action, show inspect panel and resize window to 780px which is what the user will see. Add your features then run vite by typing:
 
 ```
-yarn build
+make build
 ```
 
 And put it in your browser following these [instructions](https://developer.chrome.com/docs/extensions/mv3/getstarted/).
@@ -69,3 +70,11 @@ And put it in your browser following these [instructions](https://developer.chro
 -   **Progress Bar**: <a href="https://www.npmjs.com/package/@okrad/svelte-progressbar">Svelte Progress Bar</a>
 -   **Toasts**: <a href="https://www.npmjs.com/package/@zerodevx/svelte-toast">Svelte Toasts</a>
 -   **Icons**: <a href="https://www.npmjs.com/package/svelte-feather-icons">Svelte Feather Icons</a>
+
+---
+
+## Contributors
+
+<a href="https://github.com/AlexisAnzieu"><img src="https://avatars.githubusercontent.com/u/11615615"  height="auto" width="100" style="border-radius:50%" title="Alexis Anzieu"/></a>
+<a href="https://github.com/mathieuthomas"><img src="https://avatars.githubusercontent.com/u/35575847"  height="auto" width="100" style="border-radius:50%" title="Mathieu THOMAS"/></a>
+<a href="https://github.com/betaseries"><img src="https://avatars.githubusercontent.com/u/16645960"  height="auto" width="100" style="border-radius:50%"  title="Team Betaseries"/></a>

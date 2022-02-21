@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '../../config.js';
 import { tokenStore } from '../../src/stores';
 const apiKey = import.meta.env.VITE_API_KEY as string;
 

@@ -10,12 +10,6 @@ function readCookies(name) {
     });
 }
 function checkCookies(serviceName) {
-    console.log(
-        "object :>> ",
-        !listCookies ||
-            !listCookies[serviceName] ||
-            listCookies[serviceName].length === 0
-    );
     if (
         !listCookies ||
         !listCookies[serviceName] ||

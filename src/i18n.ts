@@ -1,5 +1,5 @@
 import { derived, writable } from "svelte/store";
-import config from "../config";
+import config from "../config.js";
 import translations from "./translation.json";
 let lang = "fr";
 const language_enabled = config.language_enabled;
@@ -30,7 +30,7 @@ function translate(locale, key, vars, plural) {
     if (!text) throw new Error(`no translation found for ${locale}.${key}`);
 
     // Replace any passed in variables in the translation string.
-    Object.keys(vars).map((k) => {
+    Object.keys(vars).forEach((k) => {
         const regex = new RegExp(k, "g");
         text = text.replace(regex, vars[k]);
     });

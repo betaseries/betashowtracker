@@ -3,15 +3,19 @@
     import config from "../../config";
     import { forceNetflixUpdate, storageChrome } from "../../full_page";
     import { t } from "../i18n";
-    import { modalStore, serviceSynchroStore, tokenStore } from "../stores";
+    import { modalStore, serviceSynchroStore } from "../stores";
     import { apiFetch, apiFetchPost } from "../utils/apiFetch";
     import ItemListPlatform from "./ItemListPlatform.svelte";
-    const apiKey = import.meta.env.VITE_API_KEY as string;
 
-    let token: string;
-    tokenStore.subscribe((value) => {
-        token = value;
+    let dataSynchro;
+    serviceSynchroStore.subscribe((value) => {
+        dataSynchro = value;
     });
+    let modalData;
+    modalStore.subscribe((value) => {
+        modalData = value;
+    });
+
     const checkServices = () => {
         serviceSynchroStore.set([]);
         config.services.forEach(async (service) => {
@@ -28,6 +32,7 @@
                     synchro: false,
                     last_update: res.last_update,
                 };
+                console.log("dataService", dataService);
                 if (service.target === "netflix") {
                     dataService.synchro = res?.profile?.length > 0;
                 } else if (service.target === "arte") {
@@ -40,16 +45,7 @@
             });
         });
     };
-    let dataSynchro;
-    serviceSynchroStore.subscribe((value) => {
-        dataSynchro = value;
-    });
     checkServices();
-
-    let modalData;
-    modalStore.subscribe((value) => {
-        modalData = value;
-    });
 
     const syncProfileNetflix = (
         profile: string,

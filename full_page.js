@@ -32,6 +32,7 @@ export const forceNetflixUpdate = () => {
             chrome.runtime.sendMessage(
                 { type: "forceRefreshNetflix" },
                 function (response) {
+                    console.log("response :>> ", response);
                     return resolve(response);
                 }
             );

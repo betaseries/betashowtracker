@@ -2,7 +2,6 @@ const api_url = "https://api.betaseries.com";
 const api_key = "9676a6078b37";
 const apiFetch = async (url) => {
     const token = await localStorage.get("tokenUser");
-    console.log("token", token);
     return new Promise((resolve, reject) => {
         fetch(api_url + url, {
             method: "GET",
@@ -18,7 +17,6 @@ const apiFetch = async (url) => {
 };
 const apiFetchPost = async (url, body = {}) => {
     const token = await localStorage.get("tokenUser");
-    console.log("token", token);
     return new Promise((resolve, reject) => {
         fetch(api_url + url, {
             method: "POST",

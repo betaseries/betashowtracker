@@ -120,11 +120,6 @@
         timeUpdate && timeUpdate !== "0"
             ? dayjs.unix(timeUpdate).format("DD/MM/YYYY")
             : $t("thumbnails.label.never-synced");
-
-    const forceUpdateNetflix = () => {
-        // faire en passant le fetch de netflix par le background
-        forceNetflixUpdate();
-    };
 </script>
 
 <div class="item-list-platforms">
@@ -158,7 +153,11 @@
                     <br />
                     <span
                         class="action-force-reload"
-                        on:click={() => forceUpdateNetflix()}
+                        on:click={() =>
+                            forceNetflixUpdate().then((_) => {
+                                console.log("check");
+                                checkServices();
+                            })}
                     >
                         {$t("thumbnails.label.forceing-sync")}
                     </span>

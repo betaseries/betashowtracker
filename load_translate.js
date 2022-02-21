@@ -1,8 +1,7 @@
 import fs from "fs";
 import fetch from "node-fetch";
-import config from "./config.js";
 
-const language_enabled = config.language_enabled;
+const language_enabled = ["fr", "en"];
 const refreshTranslation = (lang) => {
     return new Promise((resolve) => {
         console.log("Fetching translation " + lang);

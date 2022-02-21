@@ -34,21 +34,18 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
                     {}
                 );
                 sendResponse({ cookiesCompute, checkAllCookies });
-                return true;
             })
             .catch((error) => {
                 console.log("error", error);
                 return sendResponse(null);
             });
-        return true;
     } else if (request.type == "forceRefreshNetflix") {
         localStorage.get("tokenUser").then((tokenUser) => {
             const now = Math.floor(Date.now() / 1000);
             if (tokenUser) {
                 localStorage.set("lastUpdateNetflix", now);
-                netflixRefresh();
+                netflixRefresh().then((_) => sendResponse(true));
             }
-            return true;
         });
     } else if (request.type == "storage") {
         switch (request.typeStorage) {
@@ -56,40 +53,40 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
                 localStorage
                     .get(request.key)
                     .then((resp) => sendResponse(resp));
-                return true;
+                break;
             case "set":
                 localStorage.set(request.key, request.value, () =>
                     sendResponse(true)
                 );
-                return true;
+                break;
+
             case "remove":
                 localStorage.remove(request.key, request.value, () =>
                     sendResponse(true)
                 );
-                return true;
+                break;
+
             case "clear":
                 localStorage.clear();
                 sendResponse(true);
-                return true;
+                break;
         }
-        return true;
     }
     return true;
 });
-chrome.tabs.onUpdated.addListener(async (r, changeInfo, tab) => {
+
+// permet de lancer la syncro auto toutes les 6 heures
+chrome.tabs.onUpdated.addListener(async (_, __, tab) => {
     if (tab.status === "complete") {
         const lastUpdateNetflix = await localStorage.get("lastUpdateNetflix");
         const tokenUser = await localStorage.get("tokenUser");
         const now = Math.floor(Date.now() / 1000);
-        console.log("lastUpdateNetflix", lastUpdateNetflix);
-        console.log("now", now);
-        console.log("tokenUser", tokenUser);
         if (
             tokenUser &&
             lastUpdateNetflix &&
             lastUpdateNetflix + 60 * 60 * 6 < now
         ) {
-            console.log("New DATE", now);
+            console.log("Refresh Netflix");
             localStorage.set("lastUpdateNetflix", now);
             netflixRefresh();
         }
