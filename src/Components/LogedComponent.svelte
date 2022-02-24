@@ -17,8 +17,10 @@
         on:change={(event) => {
             selectedTab = event.detail.value;
         }}
-        bind:group={selectedTab}>{$t("nav.manage-shows")}</Tab
+        bind:group={selectedTab}
     >
+        <span class="item-nav">{$t("nav.manage-shows")}</span>
+    </Tab>
     <Tab
         value="synchro"
         name="navigation"
@@ -26,8 +28,10 @@
         on:change={(event) => {
             selectedTab = event.detail.value;
         }}
-        bind:group={selectedTab}>{$t("nav.sync-platform")}</Tab
+        bind:group={selectedTab}
     >
+        <span class="item-nav">{$t("nav.sync-platform")}</span>
+    </Tab>
     <Tab
         value="settings"
         name="navigation"
@@ -35,8 +39,10 @@
         on:change={(event) => {
             selectedTab = event.detail.value;
         }}
-        bind:group={selectedTab}>{$t("nav.settings")}</Tab
+        bind:group={selectedTab}
     >
+        <span class="item-nav">{$t("nav.settings")}</span>
+    </Tab>
 </div>
 <section class="container-main">
     {#if selectedTab === "trackers_shows"}

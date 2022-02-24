@@ -1,12 +1,12 @@
-import { derived, writable } from "svelte/store";
+import { derived } from "svelte/store";
 import config from "../config.js";
+import { localeStore } from "../src/stores";
 import translations from "./translation.json";
 let lang = "fr";
 const language_enabled = config.language_enabled;
 const lang_nav = navigator.language.slice(0, 2);
 if (language_enabled.includes(lang_nav)) lang = lang_nav;
-
-const locale = writable(lang);
+localeStore.update(l=> lang)
 const locales = Object.keys(translations);
 
 function translate(locale, key, vars, plural) {
@@ -39,7 +39,7 @@ function translate(locale, key, vars, plural) {
 }
 
 export const t = derived(
-    locale,
+    localeStore,
     ($locale) =>
         (key, vars = {}, plural = false) =>
             translate($locale, key, vars, plural)

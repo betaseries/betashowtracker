@@ -1,3 +1,5 @@
+import config from "./config";
+
 export const checkCookiesFull = (target) => {
     return new Promise((resolve) => {
         try {
@@ -32,10 +34,25 @@ export const forceNetflixUpdate = () => {
             chrome.runtime.sendMessage(
                 { type: "forceRefreshNetflix" },
                 function (response) {
-                    console.log("response :>> ", response);
                     return resolve(response);
                 }
             );
+        } catch {
+            return resolve(null);
+        }
+    });
+};
+export const connectAccountBS = () => {
+    return new Promise((resolve) => {
+        try {
+            chrome.tabs.create({
+                url:
+                    config.url_redirect +
+                    "/authorize?client_id=" +
+                    config.app.api_key +
+                    "&redirect_uri=" +
+                    config.url_redirect,
+            });
         } catch {
             return resolve(null);
         }

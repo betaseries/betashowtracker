@@ -31,6 +31,9 @@
     }
 
     const addToList = async (ids: number[]) => {
+        if (ids.length === 0) {
+            return null;
+        }
         const joinedIds = ids.join(",");
         const res = await fetch(
             `https://api.betaseries.com/shows/show?key=${apiKey}&access_token=${token}&id=${joinedIds}`,
@@ -51,8 +54,8 @@
     };
 </script>
 
-<main style="display: flex;">
-    <div style="width: 500px;margin-bottom:30px">
+<section style="display: flex; flex-direction: column; padding-bottom: 10px;">
+    <div style="margin-bottom:10px">
         <Autocomplete
             minSearchLength={2}
             placeholder={$t("manage-show.search-show")}
@@ -60,7 +63,7 @@
             {selection}
         />
     </div>
-    <div style="width: 200px%;margin-left:40px">
+    <div style="display:flex;justify-content:center">
         <Button
             filled
             on:click={() => addToList(selection.map((show) => show.id))}
@@ -69,4 +72,4 @@
             {$t("manage-show.add-show-list")}
         </Button>
     </div>
-</main>
+</section>

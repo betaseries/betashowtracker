@@ -11,7 +11,7 @@
     };
 </script>
 
-<section>
+<section class="container-settings">
     <Button on:click={() => handleDisconnectExtension()}>
         {$t("settings.logout_extension")}
     </Button>

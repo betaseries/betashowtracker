@@ -118,7 +118,7 @@
 
     const displayLastUpdate = (timeUpdate) =>
         timeUpdate && timeUpdate !== "0"
-            ? dayjs.unix(timeUpdate).format("DD/MM/YYYY")
+            ? dayjs.unix(timeUpdate).locale("fr").format("DD/MM/YYYY")
             : $t("thumbnails.label.never-synced");
 </script>
 
@@ -155,7 +155,6 @@
                         class="action-force-reload"
                         on:click={() =>
                             forceNetflixUpdate().then((_) => {
-                                console.log("check");
                                 checkServices();
                             })}
                     >

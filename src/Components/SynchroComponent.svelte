@@ -32,7 +32,6 @@
                     synchro: false,
                     last_update: res.last_update,
                 };
-                console.log("dataService", dataService);
                 if (service.target === "netflix") {
                     dataService.synchro = res?.profile?.length > 0;
                 } else if (service.target === "arte") {

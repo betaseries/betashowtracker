@@ -11,8 +11,10 @@ const listCookies = {
     arte: ["lr-user--token"],
     canalPlus: ["passId", "sessionId"],
 };
+
 try {
     importScripts(
+        "./js/config.js",
         "./checkCookies.js",
         "./js/netflixRefresh.js",
         "./js/storage.js",
@@ -50,9 +52,9 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     } else if (request.type == "storage") {
         switch (request.typeStorage) {
             case "get":
-                localStorage
-                    .get(request.key)
-                    .then((resp) => sendResponse(resp));
+                localStorage.get(request.key).then((resp) => {
+                    sendResponse(resp);
+                });
                 break;
             case "set":
                 localStorage.set(request.key, request.value, () =>
@@ -76,7 +78,7 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
 });
 
 // permet de lancer la syncro auto toutes les 6 heures
-chrome.tabs.onUpdated.addListener(async (_, __, tab) => {
+chrome.tabs.onUpdated.addListener(async (_, changeInfo, tab) => {
     if (tab.status === "complete") {
         const lastUpdateNetflix = await localStorage.get("lastUpdateNetflix");
         const tokenUser = await localStorage.get("tokenUser");
@@ -86,9 +88,37 @@ chrome.tabs.onUpdated.addListener(async (_, __, tab) => {
             lastUpdateNetflix &&
             lastUpdateNetflix + 60 * 60 * 6 < now
         ) {
-            console.log("Refresh Netflix");
             localStorage.set("lastUpdateNetflix", now);
             netflixRefresh();
         }
+    }
+    if (
+        changeInfo &&
+        changeInfo.status === "complete" &&
+        tab &&
+        tab.url.includes(url_redirect + "/?code=")
+    ) {
+        const parserUrl = (url) => {
+            var regExp = /www.betaseries.com\/\?code=([\d\w]*)/;
+            var match = url.match(regExp);
+            if (match && match[1]) {
+                return match[1];
+            }
+        };
+        let url = tab.url;
+        let formData = new FormData();
+        formData.append("client_id", api_key);
+        formData.append("client_secret", secret_key);
+        formData.append("redirect_uri", url_redirect);
+        formData.append("code", parserUrl(url));
+        apiFetchPost("/oauth/access_token", formData).then((res) => {
+            if (res && res.access_token.length > 0) {
+                localStorage.set("tokenUser", res.access_token, () => {
+                    chrome.tabs.create({
+                        url: chrome.runtime.getURL("connection_ok.html"),
+                    });
+                });
+            }
+        });
     }
 });

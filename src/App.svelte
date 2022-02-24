@@ -1,9 +1,21 @@
 <script lang="ts">
     import { SvelteToast } from "@zerodevx/svelte-toast";
+    // Add import for each language
+    import "dayjs/locale/fr";
+    import { storageChrome } from "../full_page";
     import LogedComponent from "./Components/LogedComponent.svelte";
     import LoginComponent from "./Components/LoginComponent.svelte";
     import { tokenStore } from "./stores";
     let token = localStorage.getItem("tokenStore");
+    function updateToken() {
+        storageChrome("get", "tokenUser").then((resp) => {
+            if (resp) {
+                document.body.style.height = "600px";
+                tokenStore.update(() => resp);
+            }
+        });
+    }
+    updateToken();
     tokenStore.subscribe((value) => {
         token = value;
     });
@@ -20,23 +32,4 @@
 </main>
 
 <style>
-    :root {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    }
-
-    main {
-        padding: 1em;
-        margin: 1em;
-        background-color: white;
-    }
-
-    .logo {
-        text-align: center;
-        margin: 0;
-        padding: 0;
-    }
-    .logo img {
-        width: 400px;
-    }
 </style>

@@ -6,13 +6,17 @@
     import relativeTime from "dayjs/plugin/relativeTime";
     import { CheckIcon } from "svelte-feather-icons";
     import { t } from "../i18n";
-    import { showsStore, tokenStore } from "../stores";
+    import { localeStore, showsStore, tokenStore } from "../stores";
 
     dayjs.extend(relativeTime);
     const apiKey = import.meta.env.VITE_API_KEY;
     let token: string;
     tokenStore.subscribe((value) => {
         token = value;
+    });
+    let lang: string;
+    localeStore.subscribe((value: string) => {
+        lang = value;
     });
 
     const getShows = async () => {
@@ -49,54 +53,65 @@
 </script>
 
 {#if !shows}
-    <Loading />
+    <section style="margin-top:20px">
+        <Loading />
+    </section>
 {:else}
     {#each shows as show}
-        <div style="margin: 10px;display:flex">
-            <div style="width: 150px;">
+        <div class="container-item-show">
+            <div class="container-info-show">
                 <img
-                    height="150px"
+                    class="poster-show"
+                    height="100px"
                     src={show.images.poster || "https://picsum.photos/102/150"}
                     alt=""
                 />
-            </div>
-            <div style="width: 450px;">
-                <h2>
-                    {show.title}
-                </h2>
-
-                <div style="width: 400px;display:flex;margin:20px">
-                    <div style="width: 100px;display:flex">
-                        <Button
-                            filled
-                            round
-                            on:click={() => checkShow(show.user.next.id)}
+                <div class="container-item-show-right">
+                    <h2>
+                        {show.title}
+                    </h2>
+                    <div class="container-show-middle">
+                        <div
+                            style="display:flex; justify-content: center; align-items: center; margin-right:10px"
                         >
-                            <CheckIcon size="20" class="mr" />
-                        </Button>
-                    </div>
-                    <div style="width: 400px;">
-                        <h3 style="margin: 3px;">{show.user.next.code}</h3>
-                        <h4 style="margin: 3px;">{show.user.next.title}</h4>
-                        <p style="margin: 10px 0px 0px 3px;">
-                            {$t("manage-show.release")}
-                            {dayjs(show.user.next.date).locale("fr").fromNow()}
-                        </p>
+                            <Button
+                                filled
+                                round
+                                on:click={() => checkShow(show.user.next.id)}
+                            >
+                                <CheckIcon size="16" class="mr" />
+                            </Button>
+                        </div>
+                        <div class="info-show">
+                            <div>
+                                <p>
+                                    {show.user.next.code}
+                                </p>
+                                <p>
+                                    {show.user.next.title}
+                                </p>
+                            </div>
+                            <p class="release-date">
+                                {$t("manage-show.release")}
+                                {dayjs(show.user.next.date)
+                                    .locale(lang)
+                                    .fromNow()}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div style="width: 100px;margin-top:50px">
-                <div style="width:100%;display:inline">
-                    <ProgressBar
-                        textSize={100}
-                        style="radial"
-                        width={100}
-                        series={{
-                            perc: Math.round(show.user.status),
-                            color: "#3B8DD0",
-                        }}
-                    />
-                </div>
+
+            <div class="container-progress-bar">
+                <ProgressBar
+                    textSize={100}
+                    style="radial"
+                    width={80}
+                    series={{
+                        perc: Math.round(show.user.status),
+                        color: "#3B8DD0",
+                    }}
+                />
             </div>
         </div>
         <Divider />
