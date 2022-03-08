@@ -6,7 +6,8 @@
     import ShowsComponent from "./ShowsComponent.svelte";
     import SynchroComponent from "./SynchroComponent.svelte";
 
-    let selectedTab = "synchro";
+    // tab par défaut
+    let selectedTab = "trackers_shows";
 </script>
 
 <div style="display: flex; justify-content: start">

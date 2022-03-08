@@ -1,12 +1,12 @@
 <script lang="ts">
-    import ProgressBar from "@okrad/svelte-progressbar";
     import { toast } from "@zerodevx/svelte-toast";
-    import { Button, Divider, Loading } from "attractions";
+    import { Divider, Loading } from "attractions";
     import dayjs from "dayjs";
     import relativeTime from "dayjs/plugin/relativeTime";
-    import { CheckIcon } from "svelte-feather-icons";
     import { t } from "../i18n";
     import { localeStore, showsStore, tokenStore } from "../stores";
+    import ProgressBarComponent from "./ProgressBarComponent.svelte";
+    import ButtonCheckEpisode from "./showComponent/ButtonCheckEpisode.svelte";
 
     dayjs.extend(relativeTime);
     const apiKey = import.meta.env.VITE_API_KEY;
@@ -46,8 +46,11 @@
     };
 
     let shows;
-    showsStore.subscribe((value) => {
-        shows = value;
+    // Ajout du 'displayCheck' afin d'afficher le check dans le bouton le temps de la validation
+    showsStore.subscribe((value: Array<{}>) => {
+        shows = value
+            ? value.map((s) => ({ ...s, displayCheck: false }))
+            : null;
     });
     getShows();
 </script>
@@ -58,60 +61,37 @@
     </section>
 {:else}
     {#each shows as show}
-        <div class="container-item-show">
-            <div class="container-info-show">
-                <img
-                    class="poster-show"
-                    height="100px"
-                    src={show.images.poster || "https://picsum.photos/102/150"}
-                    alt=""
-                />
-                <div class="container-item-show-right">
-                    <h2>
-                        {show.title}
-                    </h2>
-                    <div class="container-show-middle">
-                        <div
-                            style="display:flex; justify-content: center; align-items: center; margin-right:10px"
-                        >
-                            <Button
-                                filled
-                                round
-                                on:click={() => checkShow(show.user.next.id)}
-                            >
-                                <CheckIcon size="16" class="mr" />
-                            </Button>
-                        </div>
-                        <div class="info-show">
-                            <div>
-                                <p>
-                                    {show.user.next.code}
-                                </p>
-                                <p>
-                                    {show.user.next.title}
-                                </p>
-                            </div>
-                            <p class="release-date">
-                                {$t("manage-show.release")}
-                                {dayjs(show.user.next.date)
-                                    .locale(lang)
-                                    .fromNow()}
-                            </p>
-                        </div>
+        <div class="container-show">
+            <img
+                class="poster-show"
+                height="100px"
+                src={show.images.poster || "https://picsum.photos/102/150"}
+                alt=""
+            />
+            <div class="container-show-right">
+                <div class="container-info-show">
+                    <div>
+                        <h2>
+                            {show.title}
+                        </h2>
+                        <p>
+                            {show.user.next.code} <br />
+                            {show.user.next.title}
+                        </p>
+                        <p class="release-date">
+                            {dayjs(show.user.next.date)
+                                .locale(lang)
+                                .format("DD MMMM YYYY")}
+                        </p>
                     </div>
+                    <ButtonCheckEpisode {show} {checkShow} />
                 </div>
-            </div>
-
-            <div class="container-progress-bar">
-                <ProgressBar
-                    textSize={100}
-                    style="radial"
-                    width={80}
-                    series={{
-                        perc: Math.round(show.user.status),
-                        color: "#3B8DD0",
-                    }}
-                />
+                <div class="container-show-stats">
+                    <ProgressBarComponent
+                        progressPercent={Math.round(show.user.status)}
+                        {show}
+                    />
+                </div>
             </div>
         </div>
         <Divider />

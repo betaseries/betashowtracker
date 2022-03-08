@@ -30,6 +30,3 @@
         <LogedComponent />
     {/if}
 </main>
-
-<style>
-</style>

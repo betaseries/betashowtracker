@@ -5,6 +5,7 @@
     import { t } from "../i18n";
     import { modalStore, serviceSynchroStore } from "../stores";
     import { apiFetch, apiFetchPost } from "../utils/apiFetch";
+    import compareNetflixFirst from "../utils/compareNetflixFirst";
     import ItemListPlatform from "./ItemListPlatform.svelte";
 
     let dataSynchro;
@@ -37,7 +38,7 @@
                 } else if (service.target === "arte") {
                     dataService.synchro = res?.email?.length > 0;
                 }
-                serviceSynchroStore.update((s: Array<{}>) => [
+                serviceSynchroStore.update((s: Array<typeof dataService>) => [
                     ...s,
                     dataService,
                 ]);
@@ -77,7 +78,7 @@
 
 <section class="container-list-platforms">
     {$t("explaination-syncro")}
-    {#each dataSynchro as service}
+    {#each dataSynchro.sort(compareNetflixFirst) as service}
         <ItemListPlatform {service} {checkServices} />
     {/each}
     {$t("explaination-syncro.sub-title")}

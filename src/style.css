@@ -8,6 +8,7 @@ body {
     font-size: 15px;
     margin: 0;
     padding: 0;
+    font-family: "Muli", "Lucida Grande", "Trebuchet MS", sans-serif;
 }
 
 main {
@@ -79,29 +80,31 @@ main {
     display: flex;
     justify-content: space-between;
 }
-.container-info-show {
+.container-show {
     display: flex;
     justify-content: center;
-    /* align-items: center; */
 }
-.container-item-show-right {
+.container-show-right {
     margin-left: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     width: 100%;
 }
-.container-item-show-right h2 {
+.container-show-right h2 {
     margin: 0;
     font-size: 1.2em;
 }
-.container-item-show-right p {
+.container-show-right p {
     margin: 2px;
     font-size: 1em;
     font-weight: 700;
 }
-.container-item-show-right p.release-date {
-    margin: 5px 0px 0px 3px;
+.container-show-right p.release-date {
+    margin: 3px 0px 0px 0px;
     font-weight: normal;
+    color: #999;
+    font-size: 13px;
 }
 .container-show-middle {
     display: flex;
@@ -117,12 +120,38 @@ main {
     border-radius: 5px;
     box-shadow: #999 0 0 5px;
 }
-.container-progress-bar {
-    width: 80px;
+.container-show-stats {
     display: flex;
     align-items: center;
 }
 .container-settings {
     display: flex;
     justify-content: center;
+}
+.container-info-show {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #3b8dd0;
+}
+.container-info-show p {
+    margin: 0;
+}
+.button-check-episode {
+    user-select: none;
+    border: 2px solid #eee;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 0;
+    transition: border 0.15s ease-out;
+    background-color: unset;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.button-check-episode:hover {
+    border-color: #999;
 }
