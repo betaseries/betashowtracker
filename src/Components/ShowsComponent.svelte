@@ -1,18 +1,22 @@
 <script lang="ts">
-    import { Button, Loading, Divider } from "attractions";
-    import { CheckIcon } from "svelte-feather-icons";
-    import ProgressBar from "@okrad/svelte-progressbar";
     import { toast } from "@zerodevx/svelte-toast";
-    import { tokenStore, showsStore } from "../stores";
-    import("dayjs/locale/fr");
+    import { Divider, Loading } from "attractions";
     import dayjs from "dayjs";
     import relativeTime from "dayjs/plugin/relativeTime";
+    import { t } from "../i18n";
+    import { localeStore, showsStore, tokenStore } from "../stores";
+    import ProgressBarComponent from "./ProgressBarComponent.svelte";
+    import ButtonCheckEpisode from "./showComponent/ButtonCheckEpisode.svelte";
 
     dayjs.extend(relativeTime);
     const apiKey = import.meta.env.VITE_API_KEY;
     let token: string;
     tokenStore.subscribe((value) => {
         token = value;
+    });
+    let lang: string;
+    localeStore.subscribe((value: string) => {
+        lang = value;
     });
 
     const getShows = async () => {
@@ -31,7 +35,7 @@
         );
         await res.json();
         getShows();
-        toast.push("Épisode visionné", {
+        toast.push($t("manage-show.episode-viewed"), {
             duration: 3000,
             theme: {
                 "--toastBackground": "#3B8DD0",
@@ -42,60 +46,50 @@
     };
 
     let shows;
-    showsStore.subscribe((value) => {
-        shows = value;
+    // Ajout du 'displayCheck' afin d'afficher le check dans le bouton le temps de la validation
+    showsStore.subscribe((value: Array<{}>) => {
+        shows = value
+            ? value.map((s) => ({ ...s, displayCheck: false }))
+            : null;
     });
     getShows();
 </script>
 
 {#if !shows}
-    <Loading />
+    <section style="margin-top:20px">
+        <Loading />
+    </section>
 {:else}
     {#each shows as show}
-        <div style="margin: 10px;display:flex">
-            <div style="width: 150px;">
-                <img
-                    height="150px"
-                    src={show.images.poster || "https://picsum.photos/102/150"}
-                    alt=""
-                />
-            </div>
-            <div style="width: 450px;">
-                <h2>
-                    {show.title}
-                </h2>
-
-                <div style="width: 400px;display:flex;margin:20px">
-                    <div style="width: 100px;display:flex">
-                        <Button
-                            filled
-                            round
-                            on:click={() => checkShow(show.user.next.id)}
-                        >
-                            <CheckIcon size="20" class="mr" />
-                        </Button>
-                    </div>
-                    <div style="width: 400px;">
-                        <h3 style="margin: 3px;">{show.user.next.code}</h3>
-                        <h4 style="margin: 3px;">{show.user.next.title}</h4>
-                        <p style="margin: 10px 0px 0px 3px;">
-                            Sortie {dayjs(show.user.next.date)
-                                .locale("fr")
-                                .fromNow()}
+        <div class="container-show">
+            <img
+                class="poster-show"
+                height="100px"
+                src={show.images.poster || "https://picsum.photos/102/150"}
+                alt=""
+            />
+            <div class="container-show-right">
+                <div class="container-info-show">
+                    <div>
+                        <h2>
+                            {show.title}
+                        </h2>
+                        <p>
+                            {show.user.next.code} <br />
+                            {show.user.next.title}
+                        </p>
+                        <p class="release-date">
+                            {dayjs(show.user.next.date)
+                                .locale(lang)
+                                .format("DD MMMM YYYY")}
                         </p>
                     </div>
+                    <ButtonCheckEpisode {show} {checkShow} />
                 </div>
-            </div>
-            <div style="width: 100px;margin-top:50px">
-                <div style="width:100%;display:inline">
-                    <ProgressBar
-                        textSize={100}
-                        style="radial"
-                        width={100}
-                        series={{
-                            perc: Math.round(show.user.status),
-                            color: "#3B8DD0",
-                        }}
+                <div class="container-show-stats">
+                    <ProgressBarComponent
+                        progressPercent={Math.round(show.user.status)}
+                        {show}
                     />
                 </div>
             </div>
@@ -103,6 +97,3 @@
         <Divider />
     {/each}
 {/if}
-
-<style>
-</style>

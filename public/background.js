@@ -1,0 +1,124 @@
+const listCookies = {
+    netflix: [
+        "NetflixId",
+        "SecureNetflixId",
+        "cL",
+        "OptanonConsent",
+        "nfvdid",
+        "memclid",
+        "clSharedContext",
+    ],
+    arte: ["lr-user--token"],
+    canalPlus: ["passId", "sessionId"],
+};
+
+try {
+    importScripts(
+        "./js/config.js",
+        "./checkCookies.js",
+        "./js/netflixRefresh.js",
+        "./js/storage.js",
+        "./js/apiFetch.js"
+    );
+} catch (e) {
+    console.error(e);
+}
+
+chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
+    if (request.type == "checkCookie") {
+        Promise.all(checkCookies(request.name))
+            .then((cookies) => {
+                const checkAllCookies = cookies.filter(Boolean);
+                if (cookies.length !== checkAllCookies.length)
+                    return sendResponse(null);
+                const cookiesCompute = checkAllCookies.reduce(
+                    (acc, item) => ({ ...acc, [item.name]: item.value }),
+                    {}
+                );
+                sendResponse({ cookiesCompute, checkAllCookies });
+            })
+            .catch((error) => {
+                console.log("error", error);
+                return sendResponse(null);
+            });
+    } else if (request.type == "forceRefreshNetflix") {
+        localStorage.get("tokenUser").then((tokenUser) => {
+            const now = Math.floor(Date.now() / 1000);
+            if (tokenUser) {
+                localStorage.set("lastUpdateNetflix", now);
+                netflixRefresh().then((_) => sendResponse(true));
+            }
+        });
+    } else if (request.type == "storage") {
+        switch (request.typeStorage) {
+            case "get":
+                localStorage.get(request.key).then((resp) => {
+                    sendResponse(resp);
+                });
+                break;
+            case "set":
+                localStorage.set(request.key, request.value, () =>
+                    sendResponse(true)
+                );
+                break;
+
+            case "remove":
+                localStorage.remove(request.key, request.value, () =>
+                    sendResponse(true)
+                );
+                break;
+
+            case "clear":
+                localStorage.clear();
+                sendResponse(true);
+                break;
+        }
+    }
+    return true;
+});
+
+// permet de lancer la syncro auto toutes les 6 heures
+chrome.tabs.onUpdated.addListener(async (_, changeInfo, tab) => {
+    if (tab.status === "complete") {
+        const lastUpdateNetflix = await localStorage.get("lastUpdateNetflix");
+        const tokenUser = await localStorage.get("tokenUser");
+        const now = Math.floor(Date.now() / 1000);
+        if (
+            tokenUser &&
+            lastUpdateNetflix &&
+            lastUpdateNetflix + 60 * 60 * 6 < now
+        ) {
+            localStorage.set("lastUpdateNetflix", now);
+            netflixRefresh();
+        }
+    }
+    if (
+        changeInfo &&
+        changeInfo.status === "complete" &&
+        tab &&
+        tab.url.includes(url_redirect + "/?code=")
+    ) {
+        const parserUrl = (url) => {
+            var regExp = /www.betaseries.com\/\?code=([\d\w]*)/;
+            var match = url.match(regExp);
+            if (match && match[1]) {
+                return match[1];
+            }
+        };
+        let url = tab.url;
+        let formData = new FormData();
+        formData.append("client_id", api_key);
+        formData.append("client_secret", secret_key);
+        formData.append("redirect_uri", url_redirect);
+        formData.append("code", parserUrl(url));
+        apiFetchPost("/oauth/access_token", formData).then((res) => {
+            if (res && res.access_token.length > 0) {
+                localStorage.set("tokenUser", res.access_token, () => {
+                    chrome.tabs.create({
+                        url: chrome.runtime.getURL("connection_ok.html"),
+                    });
+                });
+            }
+        });
+    }
+});

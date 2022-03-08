@@ -1,10 +1,21 @@
 <script lang="ts">
-    import AutocompleteComponent from "./Components/AutocompleteComponent.svelte";
-    import LoginComponent from "./Components/LoginComponent.svelte";
-    import ShowsComponent from "./Components/ShowsComponent.svelte";
     import { SvelteToast } from "@zerodevx/svelte-toast";
+    // Add import for each language
+    import "dayjs/locale/fr";
+    import { storageChrome } from "../full_page";
+    import LogedComponent from "./Components/LogedComponent.svelte";
+    import LoginComponent from "./Components/LoginComponent.svelte";
     import { tokenStore } from "./stores";
     let token = localStorage.getItem("tokenStore");
+    function updateToken() {
+        storageChrome("get", "tokenUser").then((resp) => {
+            if (resp) {
+                document.body.style.height = "600px";
+                tokenStore.update(() => resp);
+            }
+        });
+    }
+    updateToken();
     tokenStore.subscribe((value) => {
         token = value;
     });
@@ -12,23 +23,10 @@
 
 <main>
     <SvelteToast />
-    <h2>Beta Show Tracker</h2>
+    <p class="logo"><img src="/images/logo.png" alt="BetaSeries" /></p>
     {#if !token}
         <LoginComponent />
     {:else}
-        <AutocompleteComponent />
-        <ShowsComponent />
+        <LogedComponent />
     {/if}
 </main>
-
-<style>
-    :root {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    }
-
-    main {
-        padding: 1em;
-        margin: 0 auto;
-    }
-</style>
